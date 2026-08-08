@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Georgia:ital,wght@0,400;0,700;1,400;1,700&family=Hanken+Grotesk:wght@400;600&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,700;1,7..72,400;1,7..72,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+  font-family: 'Literata', Georgia, serif;
+  background: #fbf9f8;
+  color: #1b1c1c;
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: #fbf9f8;
+    color: #1b1c1c;
+    font-family: 'Literata', Georgia, serif;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* Override all border-radius to 0 for editorial sharp look */
+  *:not(.rounded-full) {
+    border-radius: 0 !important;
+  }
+
+  .rounded-full {
+    border-radius: 9999px !important;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Georgia', serif;
+  }
+
+  button, input, textarea, select {
+    font: inherit;
+  }
+}
+
+.material-symbols-outlined {
+  font-family: 'Material Symbols Outlined';
+  font-variation-settings: 'FILL' 0;
+  vertical-align: middle;
+}
+
+/* Editorial image zoom on hover */
+.image-zoom {
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.group:hover .image-zoom {
+  transform: scale(1.05);
+}
+
+/* Editorial inset clip-path effect */
+.editorial-inset {
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.group:hover .editorial-inset {
+  clip-path: inset(2% 2% 2% 2%);
+}
+
+/* Hide scrollbar */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Selection color */
+::selection {
+  background-color: #fed488;
+  color: #785a1a;
+}
+
+/* ── Infinite picks marquee ─────────────────────────────── */
+@keyframes picks-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.picks-track {
+  display: flex;
+  width: max-content;
+  animation: picks-scroll 32s linear infinite;
+  will-change: transform;
+}
+
+/* Pause when cursor is anywhere inside the slider wrapper */
+.picks-slider:hover .picks-track {
+  animation-play-state: paused;
+}
+
+/* Fade edges */
+.picks-slider {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 6%,
+    black 94%,
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 6%,
+    black 94%,
+    transparent 100%
+  );
+}
+
