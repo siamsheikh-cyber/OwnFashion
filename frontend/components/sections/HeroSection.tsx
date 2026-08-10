@@ -40,8 +40,8 @@ export default function HeroSection() {
 
       {/* 3-col Promo Video/Inset */}
       <div className="md:col-span-3 hidden md:block">
-        <div className="h-full flex items-center justify-center p-4">
-          <div className="relative w-[60%] h-[400px] bg-surface-container p-[10px] shadow-[12px_12px_0px_0px_rgba(0,0,0,0.05)] group overflow-hidden">
+        <div className="h-full flex items-center justify-center p-4 ">
+          <div className="relative w-[60%] h-[400px] bg-surface-container border border-primary/20 p-[10px] shadow-[12px_12px_0px_0px_rgba(0,0,0,0.05)] group overflow-hidden">
             <video
               autoPlay
               loop
