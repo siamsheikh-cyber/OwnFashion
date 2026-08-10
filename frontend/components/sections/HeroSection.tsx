@@ -9,13 +9,12 @@ export default function HeroSection() {
           className="absolute inset-0 bg-cover bg-center image-zoom"
           style={{
             backgroundImage:
-              "url('https://images.unsplash.com/photo-1539109136881-3be0616acf4b?auto=format&fit=crop&w=1400&q=80')",
+              "url('/images/ownfashion-hero.png')",
           }}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent" />
 
         {/* Editorial Spotlight Card */}
-        <div className="absolute -bottom-12 left-[32px] bg-secondary-container px-8 py-8 max-w-2xl border border-primary/20 z-20">
+        <div className="absolute bottom-12 left-[152px] bg-secondary-container px-8 py-8 max-w-2xl border border-primary/20 z-20">
           <p
             className="text-on-secondary-container uppercase tracking-widest mb-2"
             style={{ fontFamily: 'Hanken Grotesk, sans-serif', fontSize: '12px', letterSpacing: '0.1em', fontWeight: 600 }}
@@ -42,7 +41,7 @@ export default function HeroSection() {
       {/* 3-col Promo Video/Inset */}
       <div className="md:col-span-3 hidden md:block">
         <div className="h-full flex items-center justify-center p-4">
-          <div className="relative w-full h-[500px] bg-surface-container border border-primary p-4 shadow-[10px_10px_0px_0px_rgba(0,0,0,0.05)] group overflow-hidden">
+          <div className="relative w-[60%] h-[400px] bg-surface-container p-[10px] shadow-[12px_12px_0px_0px_rgba(0,0,0,0.05)] group overflow-hidden">
             <video
               autoPlay
               loop

@@ -2,7 +2,7 @@
 
 export default function Footer() {
   return (
-    <footer className="bg-surface-container-lowest border-t border-primary/10 py-[120px] px-[20px] md:px-[80px] mt-[120px]">
+    <footer className="bg-surface-container-lowest border-t border-primary/10 pt-[70px] pb-[50px] px-[20px] md:px-[80px] mt-[120px]">
       <div className="max-w-[1200px] mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-12 gap-[32px] mb-[64px]">
 

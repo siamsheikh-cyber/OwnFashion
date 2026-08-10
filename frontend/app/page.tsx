@@ -13,7 +13,7 @@ export default function HomePage() {
       <Navbar />
 
       {/* Main Content */}
-      <main className="mx-auto py-[64px] flex flex-col gap-[120px]">
+      <main className="mx-auto pt-0 pb-[0px] flex flex-col gap-[120px]">
         <HeroSection />
         <LatestArticles />
         <SeasonalPicks />
