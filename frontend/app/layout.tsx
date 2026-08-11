@@ -14,6 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
           rel="stylesheet"
         />
+        <meta name="p:domain_verify" content="a2d3046d043448b327e624ddd3d9b06b" />
       </head>
       <body>{children}</body>
     </html>
