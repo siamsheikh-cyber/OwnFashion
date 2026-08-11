@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import { trends } from '@/lib/data';
 
 export default function TrendingSection() {
@@ -23,39 +24,41 @@ export default function TrendingSection() {
             key={item.title}
             className="group cursor-pointer flex flex-col border border-primary/10 bg-surface p-4 hover:shadow-lg transition-shadow duration-300"
           >
-            <div className="relative h-[300px] overflow-hidden mb-6">
-              <div
-                className="absolute inset-0 bg-cover bg-center image-zoom"
-                style={{ backgroundImage: `url('${item.image}')` }}
-              />
-            </div>
-            <div className="text-center flex-grow flex flex-col">
-              <h3
-                className="text-secondary uppercase tracking-widest mb-2"
-                style={{ fontFamily: 'Hanken Grotesk, sans-serif', fontSize: '12px', letterSpacing: '0.1em', fontWeight: 600 }}
-              >
-                {item.tag}{' '}
-                <span className="text-on-surface-variant mx-1 normal-case">•</span>{' '}
-                <span
-                  className="normal-case italic"
-                  style={{ fontFamily: 'Literata, serif', fontSize: '14px', fontWeight: 400 }}
+            <Link href={`/posts/${item.slug || 'embracing-the-new-pastels'}`} className="flex flex-col h-full">
+              <div className="relative h-[300px] overflow-hidden mb-6">
+                <div
+                  className="absolute inset-0 bg-cover bg-center image-zoom"
+                  style={{ backgroundImage: `url('${item.image}')` }}
+                />
+              </div>
+              <div className="text-center flex-grow flex flex-col">
+                <h3
+                  className="text-secondary uppercase tracking-widest mb-2"
+                  style={{ fontFamily: 'Hanken Grotesk, sans-serif', fontSize: '12px', letterSpacing: '0.1em', fontWeight: 600 }}
                 >
-                  {item.readTime}
-                </span>
-              </h3>
-              <h4
-                className="text-primary group-hover:text-secondary transition-colors mb-4"
-                style={{ fontFamily: 'Georgia, serif', fontSize: '20px', lineHeight: '1.6', fontWeight: 400 }}
-              >
-                {item.title}
-              </h4>
-              <p
-                className="text-on-surface-variant italic mt-auto pt-4 border-t border-primary/10"
-                style={{ fontFamily: 'Literata, serif', fontSize: '14px', lineHeight: '1.4' }}
-              >
-                By OwnFashion Team
-              </p>
-            </div>
+                  {item.tag}{' '}
+                  <span className="text-on-surface-variant mx-1 normal-case">•</span>{' '}
+                  <span
+                    className="normal-case italic"
+                    style={{ fontFamily: 'Literata, serif', fontSize: '14px', fontWeight: 400 }}
+                  >
+                    {item.readTime}
+                  </span>
+                </h3>
+                <h4
+                  className="text-primary group-hover:text-secondary transition-colors mb-4"
+                  style={{ fontFamily: 'Georgia, serif', fontSize: '20px', lineHeight: '1.6', fontWeight: 400 }}
+                >
+                  {item.title}
+                </h4>
+                <p
+                  className="text-on-surface-variant italic mt-auto pt-4 border-t border-primary/10"
+                  style={{ fontFamily: 'Literata, serif', fontSize: '14px', lineHeight: '1.4' }}
+                >
+                  By OwnFashion Team
+                </p>
+              </div>
+            </Link>
           </article>
         ))}
       </div>

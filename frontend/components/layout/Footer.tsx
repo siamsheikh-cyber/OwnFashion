@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { CiFacebook } from "react-icons/ci";
 import { FaInstagram } from "react-icons/fa";
 import { ImPinterest2 } from "react-icons/im";
@@ -60,18 +61,18 @@ export default function Footer() {
               }}
             >
               {[
-                "Latest Articles",
-                "Product Reviews",
-                "About the Editorial",
-                "Contact Us",
+                { name: "Latest Posts", href: "/posts" },
+                { name: "Product Reviews", href: "/posts" },
+                { name: "About the Editorial", href: "#" },
+                { name: "Contact Us", href: "#" },
               ].map((item) => (
-                <li key={item}>
-                  <a
-                    href="#"
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
                     className="hover:text-secondary transition-colors"
                   >
-                    {item}
-                  </a>
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>

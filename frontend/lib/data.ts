@@ -4,18 +4,21 @@ export const navLinks = ['Home', 'Blog', 'Category', 'About', 'Contact'];
 
 export const featuredArticles: Article[] = [
   {
+    slug: 'investing-in-timeless-hardware',
     category: 'Accessories',
     title: 'Investing in Timeless Hardware',
     readTime: '4 min read',
     image: 'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=900&q=80',
   },
   {
+    slug: 'the-architecture-of-a-bold-lip',
     category: 'Beauty',
     title: 'The Architecture of a Bold Lip',
     readTime: '3 min read',
     image: 'https://images.unsplash.com/photo-1487412947147-5cebf100ffc2?auto=format&fit=crop&w=900&q=80',
   },
   {
+    slug: 'reading-list-april-edition',
     category: 'Curation',
     title: 'Reading List: April Edition',
     readTime: '5 min read',
@@ -52,18 +55,21 @@ export const picks: PickItem[] = [
 
 export const trends: TrendItem[] = [
   {
+    slug: 'embracing-the-new-pastels',
     title: 'Embracing the New Pastels',
     tag: 'Spring Essentials',
     readTime: '5 min read',
     image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=900&q=80',
   },
   {
+    slug: 'deconstructing-the-canadian-tuxedo',
     title: 'Deconstructing the Canadian Tuxedo',
     tag: 'Denim Redux',
     readTime: '6 min read',
     image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?auto=format&fit=crop&w=900&q=80',
   },
   {
+    slug: 'textures-of-the-night',
     title: 'Textures of the Night',
     tag: 'Evening Wear',
     readTime: '4 min read',

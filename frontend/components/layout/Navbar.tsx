@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { navLinks } from "@/lib/data";
 import { ImPinterest2 } from "react-icons/im";
 import { FaInstagram } from "react-icons/fa";
@@ -7,16 +8,24 @@ import { CiFacebook } from "react-icons/ci";
 import { PiTiktokLogoLight } from "react-icons/pi";
 
 export default function Navbar() {
+  const getHref = (linkName: string) => {
+    if (linkName === "Home") return "/";
+    if (linkName === "Blog" || linkName === "Posts") return "/posts";
+    return "/posts";
+  };
+
   return (
     <nav className="bg-[#ECE7DC] backdrop-blur-md w-full top-0 sticky border-b border-primary/10 z-50 transition-all ease-in-out duration-300">
-      <div className="flex items-center h-[110px] px-[20px] md:px-[80px]  w-full gap-8 relative">
+      <div className="flex items-center h-[110px] px-[20px] md:px-[80px] w-full gap-8 relative">
         {/* Logo */}
         <div className="flex-shrink-0">
-          <img
-            src="/images/ownfashion.png"
-            alt="ownfashion"
-            className="w-[200px] object-cover"
-          />
+          <Link href="/">
+            <img
+              src="/images/ownfashion.png"
+              alt="ownfashion"
+              className="w-[200px] object-cover cursor-pointer"
+            />
+          </Link>
         </div>
 
         {/* Center Nav (Desktop) */}
@@ -30,17 +39,17 @@ export default function Navbar() {
           }}
         >
           {navLinks.map((link, i) => (
-            <a
+            <Link
               key={link}
-              href="#"
+              href={getHref(link)}
               className={
                 i === 0
-                  ? "text-secondary border-b border-secondary pb-1 transition-all ease-in-out duration-300"
+                  ? "text-secondary border-b border-secondary pb-1 transition-all ease-in-out duration-300 hover:text-primary"
                   : "text-on-surface-variant hover:text-primary transition-all ease-in-out duration-300"
               }
             >
               {link}
-            </a>
+            </Link>
           ))}
         </div>
 
@@ -62,24 +71,15 @@ export default function Navbar() {
             <CiFacebook className="text-[20px]" />
           </button>
 
-          <button className="hover:text-secondary transition-colors duration-300">
+          <Link href="/posts" className="hover:text-secondary transition-colors duration-300 flex items-center">
             <span
-              className="material-symbols-outlined"
-              style={{ fontVariationSettings: '"FILL" 0' }}
-            >
-              dark_mode
-            </span>
-          </button>
-
-          <button className="hover:text-secondary transition-colors duration-300">
-            <span
-              className="material-symbols-outlined"
+              className="material-symbols-outlined text-[22px]"
               style={{ fontVariationSettings: '"FILL" 0' }}
             >
               search
             </span>
-          </button>
- </div>
+          </Link>
+        </div>
 
         {/* Mobile Hamburger */}
         <div className="md:hidden">
