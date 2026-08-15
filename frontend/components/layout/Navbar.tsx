@@ -1,18 +1,29 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { navLinks } from "@/lib/data";
 import { ImPinterest2 } from "react-icons/im";
 import { FaInstagram } from "react-icons/fa";
 import { CiFacebook } from "react-icons/ci";
 import { PiTiktokLogoLight } from "react-icons/pi";
 
+const getLinkHref = (linkName: string): string => {
+  if (linkName === "Home") return "/";
+  if (linkName === "Blog" || linkName === "Posts") return "/posts";
+  if (linkName === "About") return "/about";
+  if (linkName === "Contact") return "/contact";
+  return "/";
+};
+
+const isLinkActive = (linkName: string, pathname: string): boolean => {
+  const href = getLinkHref(linkName);
+  if (href === "/") return pathname === "/";
+  return pathname === href || pathname.startsWith(href + "/");
+};
+
 export default function Navbar() {
-  const getHref = (linkName: string) => {
-    if (linkName === "Home") return "/";
-    if (linkName === "Blog" || linkName === "Posts") return "/posts";
-    return "/posts";
-  };
+  const pathname = usePathname();
 
   return (
     <nav className="bg-[#ECE7DC] backdrop-blur-md w-full top-0 sticky border-b border-primary/10 z-50 transition-all ease-in-out duration-300">
@@ -38,19 +49,22 @@ export default function Navbar() {
             fontWeight: 600,
           }}
         >
-          {navLinks.map((link, i) => (
-            <Link
-              key={link}
-              href={getHref(link)}
-              className={
-                i === 0
-                  ? "text-secondary border-b border-secondary pb-1 transition-all ease-in-out duration-300 hover:text-primary"
-                  : "text-on-surface-variant hover:text-primary transition-all ease-in-out duration-300"
-              }
-            >
-              {link}
-            </Link>
-          ))}
+          {navLinks.map((link) => {
+            const active = isLinkActive(link, pathname);
+            return (
+              <Link
+                key={link}
+                href={getLinkHref(link)}
+                className={
+                  active
+                    ? "text-secondary border-b border-secondary pb-1 transition-all ease-in-out duration-300 hover:text-primary"
+                    : "text-on-surface-variant hover:text-primary transition-all ease-in-out duration-300"
+                }
+              >
+                {link}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Right Icons */}

@@ -1,6 +1,6 @@
 import { Article, PickItem, CarouselProduct, TrendItem } from '@/types';
 
-export const navLinks = ['Home', 'Blog', 'Category', 'About', 'Contact'];
+export const navLinks = ['Home', 'Blog', 'About', 'Contact'];
 
 export const featuredArticles: Article[] = [
   {
