@@ -10,7 +10,7 @@ export default function ProductCarousel() {
   const prevSlide = () => setCurrentIndex((prev) => (prev - 1 + carouselProducts.length) % carouselProducts.length);
 
   return (
-    <section className="px-[20px] md:px-[80px] py-[0px] border-primary/5 relative">
+    <section className="px-[20px] md:px-[80px] pb-[90px] border-primary/5 relative">
       <div className="text-center mb-[32px]">
         <h2
           className="italic mb-4 text-primary"
