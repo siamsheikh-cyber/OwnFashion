@@ -138,8 +138,8 @@ export default function ProductCarousel() {
                 type="button"
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 text-xs uppercase tracking-wider font-semibold transition-all duration-200 border ${isActive
-                    ? "bg-primary text-white border-primary shadow-sm"
-                    : "bg-surface text-on-surface-variant border-primary/15 hover:border-secondary hover:text-secondary hover:bg-surface-container"
+                  ? "bg-primary text-white border-primary shadow-sm"
+                  : "bg-surface text-on-surface-variant border-primary/15 hover:border-secondary hover:text-secondary hover:bg-surface-container"
                   }`}
                 style={{ fontFamily: "Hanken Grotesk, sans-serif" }}
               >
@@ -281,8 +281,8 @@ export default function ProductCarousel() {
               key={index}
               onClick={() => scrollTo(index)}
               className={`h-2 rounded-full transition-all duration-300 ${isActive
-                  ? 'w-6 bg-primary opacity-100'
-                  : 'w-2 bg-primary/25 hover:bg-primary/50 opacity-60'
+                ? 'w-6 bg-primary opacity-100'
+                : 'w-2 bg-primary/25 hover:bg-primary/50 opacity-60'
                 }`}
               aria-label={`Go to slide ${index + 1}`}
               aria-current={isActive ? 'true' : 'false'}
@@ -293,12 +293,6 @@ export default function ProductCarousel() {
 
       {/* Bottom Disclaimer */}
       <div className="mt-8 text-center space-y-1.5 max-w-5xl mx-auto">
-        <p
-          className="text-on-surface-variant italic opacity-70"
-          style={{ fontFamily: 'Literata, serif', fontSize: '14px', lineHeight: '1.4' }}
-        >
-          As an Amazon Associate, we earn from qualifying purchases.
-        </p>
         <p
           className="text-on-surface-variant/60 text-xs leading-relaxed"
           style={{ fontFamily: 'Literata, serif' }}

@@ -131,7 +131,7 @@ export default function SeasonalPicks() {
             className="text-primary italic text-[26px] sm:text-[30px] md:text-[34px] leading-tight"
             style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}
           >
-            Seasonal Comfort &amp; Budget Picks
+            Seasonal Essentials & Comfort Fits
           </h2>
         </div>
 
@@ -177,14 +177,6 @@ export default function SeasonalPicks() {
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 will-change-transform pointer-events-none select-none"
                   style={{ backgroundImage: `url('${item.image}')` }}
                 />
-                <div className="absolute top-4 left-4 bg-surface/95 backdrop-blur-sm px-3 py-1 border border-primary/10 shadow-sm pointer-events-none">
-                  <span
-                    className="text-primary font-semibold text-xs tracking-wider uppercase"
-                    style={{ fontFamily: "Hanken Grotesk, sans-serif" }}
-                  >
-                    {item.tag}
-                  </span>
-                </div>
               </div>
 
               {/* Title */}
@@ -203,13 +195,13 @@ export default function SeasonalPicks() {
                 {item.caption}
               </p>
 
-              {/* Shop Look Button */}
+              {/* Read More Button */}
               <button
                 type="button"
                 className="w-full py-3 border border-primary text-primary uppercase tracking-widest text-xs font-semibold hover:bg-secondary-container hover:border-secondary hover:text-on-secondary-container transition-colors duration-200"
                 style={{ fontFamily: "Hanken Grotesk, sans-serif", letterSpacing: "0.1em" }}
               >
-                Shop Look
+                Read More
               </button>
             </article>
           ))}

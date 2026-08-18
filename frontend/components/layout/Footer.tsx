@@ -61,8 +61,8 @@ export default function Footer() {
               }}
             >
               {[
-                { name: "Latest Posts", href: "/posts" },
-                { name: "Product Reviews", href: "/posts" },
+                { name: "Latest Posts", href: "#latestposts" },
+                { name: "All Blogs", href: "/posts" },
                 { name: "About the Editorial", href: "/about" },
                 { name: "Contact Us", href: "/contact" },
               ].map((item) => (
@@ -135,17 +135,19 @@ export default function Footer() {
               fontWeight: 600,
             }}
           >
-            {["Privacy Policy", "Terms of Service", "Newsletter"].map(
-              (item) => (
-                <a
-                  key={item}
-                  href="#"
-                  className="text-on-surface-variant hover:text-secondary transition-colors"
-                >
-                  {item}
-                </a>
-              ),
-            )}
+            {[
+              { name: "Privacy Policy", href: "/privacy-policy" },
+              { name: "Terms of Service", href: "/terms-of-service" },
+              { name: "Disclaimer", href: "/disclaimer" },
+            ].map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className="text-on-surface-variant hover:text-secondary transition-colors"
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
           <div
             className="text-on-surface-variant italic"
@@ -155,7 +157,7 @@ export default function Footer() {
               lineHeight: "1.4",
             }}
           >
-            © 2024 OwnFashion Editorial. All Rights Reserved.
+            © 2026 OwnFashion Editorial. All Rights Reserved.
           </div>
         </div>
       </div>

@@ -19,7 +19,7 @@ export default function LatestArticles() {
   };
 
   return (
-    <section className="px-[20px] md:px-[80px]">
+    <section id='latestposts' className="px-[20px] md:px-[80px]">
       <div className="flex items-end justify-between mb-[32px] pb-4 border-b border-primary/10">
         <h2
           className="text-primary italic"

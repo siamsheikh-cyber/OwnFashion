@@ -34,6 +34,16 @@ export default function Navbar() {
 
   return (
     <nav className="bg-[#ECE7DC] backdrop-blur-md w-full top-0 sticky border-b border-primary/10 z-50 transition-all ease-in-out duration-300">
+      {/* Top Announcement Bar - Amazon Affiliate Disclosure */}
+      <div className="bg-[#DFD8C8] text-primary/80 border-b border-primary/10 py-1.5 sm:py-2 px-4 text-center">
+        <p
+          className="text-[11px] sm:text-xs tracking-wider font-medium"
+          style={{ fontFamily: "Hanken Grotesk, sans-serif", letterSpacing: "0.08em" }}
+        >
+          As an Amazon Associate, we may earn from qualifying buys.
+        </p>
+      </div>
+
       <div className="flex items-center justify-between h-[75px] sm:h-[90px] md:h-[110px] px-4 sm:px-8 md:px-[60px] lg:px-[80px] w-full gap-4 md:gap-8 relative">
         {/* Logo */}
         <div className="flex-shrink-0">
@@ -168,11 +178,10 @@ export default function Navbar() {
                   key={`mobile-${link}`}
                   href={getLinkHref(link)}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`text-sm uppercase tracking-widest font-semibold py-2 px-3 transition-colors duration-200 flex items-center justify-between border-l-2 ${
-                    active
+                  className={`text-sm uppercase tracking-widest font-semibold py-2 px-3 transition-colors duration-200 flex items-center justify-between border-l-2 ${active
                       ? "text-secondary border-secondary bg-black/5"
                       : "text-primary border-transparent hover:text-secondary hover:border-secondary/40"
-                  }`}
+                    }`}
                   style={{ fontFamily: "Hanken Grotesk, sans-serif" }}
                 >
                   <span>{link}</span>
