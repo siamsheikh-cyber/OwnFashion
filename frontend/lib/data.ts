@@ -106,4 +106,19 @@ export const carouselProducts: CarouselProduct[] = [
     quote: 'Breathable comfort meets sharp tailoring. My go-to for summer evenings.',
     details: ['100% Organic Linen', 'High-waisted fit', 'Side seam pockets'],
   },
+  {
+    name: 'Handcrafted Leather Mule',
+    price: '$110.00',
+    image: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?auto=format&fit=crop&w=900&q=80',
+    quote: 'The craftsmanship is astonishing. Effortlessly elevates casual denim or trousers.',
+    details: ['100% Calfskin leather', 'Padded insole for comfort', 'Hand-stitched detailing'],
+  },
+  {
+    name: 'Ribbed Modal Maxi Dress',
+    price: '$68.00',
+    image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?auto=format&fit=crop&w=900&q=80',
+    quote: 'Flattering silhouette that moves gracefully with every step. Pure timeless elegance.',
+    details: ['Ultra-soft ribbed modal blend', 'Double-layered bodice', 'Subtle side slit detail'],
+  },
 ];
+
