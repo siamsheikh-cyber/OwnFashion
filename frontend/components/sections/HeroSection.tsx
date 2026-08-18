@@ -8,7 +8,7 @@ export default function HeroSection() {
       {/* 9-col (desktop) / 8-col (tablet) / 12-col (mobile) Hero Image Banner */}
       <div className="h-[380px] sm:h-[480px] md:h-[600px] lg:h-[700px] relative group overflow-hidden border border-primary/10 bg-surface-container md:col-span-8 lg:col-span-9 w-full cursor-pointer">
         <div
-          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 will-change-transform"
+          className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-[1.01] will-change-transform"
           style={{
             backgroundImage: "url('/images/ownfashion-hero.png')",
           }}

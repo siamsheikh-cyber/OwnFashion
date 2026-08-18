@@ -13,6 +13,7 @@
 }
 
 @layer base {
+
   *,
   *::before,
   *::after {
@@ -43,11 +44,19 @@
     border-radius: 9999px !important;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Georgia', serif;
   }
 
-  button, input, textarea, select {
+  button,
+  input,
+  textarea,
+  select {
     font: inherit;
   }
 }
@@ -95,8 +104,13 @@
 
 /* ── Infinite picks marquee ─────────────────────────────── */
 @keyframes picks-scroll {
-  0%   { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .picks-track {
@@ -113,19 +127,14 @@
 
 /* Fade edges */
 .picks-slider {
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 6%,
-    black 94%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 6%,
-    black 94%,
-    transparent 100%
-  );
+  -webkit-mask-image: linear-gradient(to right,
+      transparent 0%,
+      black 6%,
+      black 94%,
+      transparent 100%);
+  mask-image: linear-gradient(to right,
+      transparent 0%,
+      black 6%,
+      black 94%,
+      transparent 100%);
 }
-

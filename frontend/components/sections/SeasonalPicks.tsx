@@ -1,22 +1,119 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { picks } from "@/lib/data";
 
 export default function SeasonalPicks() {
   const sliderRef = useRef<HTMLDivElement>(null);
+  const isDown = useRef(false);
+  const isPausedRef = useRef(false);
+  const startX = useRef(0);
+  const scrollLeftStart = useRef(0);
+  const hasMoved = useRef(false);
+  const [isDragging, setIsDragging] = useState(false);
 
-  // Repeat picks enough times to guarantee zero blank gaps even on 4K displays
-  const infinitePicks = [...picks, ...picks, ...picks, ...picks, ...picks, ...picks, ...picks, ...picks];
+  // Duplicate picks to ensure seamless continuous looping
+  const pickList = [...picks, ...picks, ...picks, ...picks, ...picks, ...picks];
 
-  const handleScroll = (direction: "left" | "right") => {
+  // Auto-scroll loop
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    let animationFrameId: number;
+    let lastTime: number | null = null;
+    const speedPxPerSec = 5; // Smooth continuous scroll speed
+
+    const step = (time: number) => {
+      if (lastTime === null) lastTime = time;
+      const delta = (time - lastTime) / 1000;
+      lastTime = time;
+
+      if (!isPausedRef.current && !isDown.current && slider) {
+        slider.scrollLeft += speedPxPerSec * delta;
+
+        const halfWidth = slider.scrollWidth / 2;
+        if (halfWidth > 0 && slider.scrollLeft >= halfWidth) {
+          slider.scrollLeft -= halfWidth;
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(step);
+    };
+
+    animationFrameId = requestAnimationFrame(step);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  // Mouse Drag Handlers
+  const handleMouseDown = (e: React.MouseEvent) => {
     if (!sliderRef.current) return;
-    const scrollAmount = 360;
-    sliderRef.current.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
+    isDown.current = true;
+    isPausedRef.current = true;
+    hasMoved.current = false;
+    startX.current = e.pageX - sliderRef.current.offsetLeft;
+    scrollLeftStart.current = sliderRef.current.scrollLeft;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDown.current || !sliderRef.current) return;
+    e.preventDefault();
+    const x = e.pageX - sliderRef.current.offsetLeft;
+    const walk = (x - startX.current) * 1.5;
+
+    if (Math.abs(walk) > 4) {
+      if (!isDragging) setIsDragging(true);
+      hasMoved.current = true;
+    }
+
+    let nextScroll = scrollLeftStart.current - walk;
+    const halfWidth = sliderRef.current.scrollWidth / 2;
+
+    if (halfWidth > 0) {
+      if (nextScroll >= halfWidth) {
+        nextScroll -= halfWidth;
+        scrollLeftStart.current -= halfWidth;
+      } else if (nextScroll < 0) {
+        nextScroll += halfWidth;
+        scrollLeftStart.current += halfWidth;
+      }
+    }
+
+    sliderRef.current.scrollLeft = nextScroll;
+  };
+
+  const handleMouseUp = () => {
+    isDown.current = false;
+    setIsDragging(false);
+  };
+
+  const handleMouseEnter = () => {
+    isPausedRef.current = true;
+  };
+
+  const handleMouseLeave = () => {
+    isDown.current = false;
+    setIsDragging(false);
+    isPausedRef.current = false;
+  };
+
+  const handleTouchStart = () => {
+    isPausedRef.current = true;
+  };
+
+  const handleTouchEnd = () => {
+    isPausedRef.current = false;
+  };
+
+  const handleClickCapture = (e: React.MouseEvent) => {
+    if (hasMoved.current) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
   };
 
   return (
@@ -38,39 +135,8 @@ export default function SeasonalPicks() {
           </h2>
         </div>
 
-        {/* Right side: Navigation Controls & View All */}
-        <div className="flex items-center gap-4 sm:gap-6 self-end sm:self-auto">
-          {/* Unique White & Blue-Green Gradient Arrow Navigation Buttons */}
-          <div className="flex items-center gap-2.5">
-            {/* Prev Button */}
-            <button
-              type="button"
-              onClick={() => handleScroll("left")}
-              className="relative group p-[2px] rounded-full bg-gradient-to-r from-[#06b6d4] via-[#10b981] to-[#3b82f6] shadow-md hover:shadow-cyan-500/25 hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none"
-              aria-label="Previous picks"
-            >
-              <span className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-full flex items-center justify-center transition-colors">
-                <span className="material-symbols-outlined text-[20px] sm:text-[22px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#0d9488] to-[#2563eb] group-hover:from-[#06b6d4] group-hover:to-[#3b82f6] transition-all duration-300">
-                  chevron_left
-                </span>
-              </span>
-            </button>
-
-            {/* Next Button */}
-            <button
-              type="button"
-              onClick={() => handleScroll("right")}
-              className="relative group p-[2px] rounded-full bg-gradient-to-r from-[#3b82f6] via-[#10b981] to-[#06b6d4] shadow-md hover:shadow-cyan-500/25 hover:scale-105 active:scale-95 transition-all duration-300 focus:outline-none"
-              aria-label="Next picks"
-            >
-              <span className="w-9 h-9 sm:w-10 sm:h-10 bg-white rounded-full flex items-center justify-center transition-colors">
-                <span className="material-symbols-outlined text-[20px] sm:text-[22px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#2563eb] to-[#0d9488] group-hover:from-[#3b82f6] group-hover:to-[#06b6d4] transition-all duration-300">
-                  chevron_right
-                </span>
-              </span>
-            </button>
-          </div>
-
+        {/* Right side: View All Link */}
+        <div className="flex items-center self-end sm:self-auto">
           <Link
             href="/posts"
             className="text-on-surface-variant hover:text-primary transition-colors uppercase tracking-widest text-xs font-semibold"
@@ -81,24 +147,37 @@ export default function SeasonalPicks() {
         </div>
       </div>
 
-      {/* Infinite Scrolling Track */}
+      {/* Auto-scrolling & Draggable Track */}
       <div
         ref={sliderRef}
-        className="picks-slider overflow-x-auto hide-scrollbar scroll-smooth py-2"
+        onMouseDown={handleMouseDown}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        onClickCapture={handleClickCapture}
+        className={`picks-slider overflow-x-auto hide-scrollbar select-none py-2 px-5 sm:px-8 md:px-[60px] lg:px-[80px] ${isDragging ? "cursor-grabbing" : "cursor-grab"
+          }`}
+        style={{
+          WebkitOverflowScrolling: "touch",
+        }}
       >
-        <div className="picks-track gap-[24px]">
-          {infinitePicks.map((item, idx) => (
+        <div className="picks-track gap-[24px] select-none">
+          {pickList.map((item, idx) => (
             <article
               key={`${item.title}-${idx}`}
-              className="group cursor-pointer flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px]"
+              className={`group flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] select-none ${isDragging ? "cursor-grabbing" : "cursor-grab"
+                }`}
             >
               {/* Product Image Frame */}
-              <div className="relative h-[380px] md:h-[400px] overflow-hidden bg-surface-container mb-4 border border-primary/10">
+              <div className="relative h-[380px] md:h-[400px] overflow-hidden bg-surface-container mb-4 border border-primary/10 select-none">
                 <div
-                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 will-change-transform"
+                  className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 will-change-transform pointer-events-none select-none"
                   style={{ backgroundImage: `url('${item.image}')` }}
                 />
-                <div className="absolute top-4 left-4 bg-surface/95 backdrop-blur-sm px-3 py-1 border border-primary/10 shadow-sm">
+                <div className="absolute top-4 left-4 bg-surface/95 backdrop-blur-sm px-3 py-1 border border-primary/10 shadow-sm pointer-events-none">
                   <span
                     className="text-primary font-semibold text-xs tracking-wider uppercase"
                     style={{ fontFamily: "Hanken Grotesk, sans-serif" }}
@@ -139,3 +218,4 @@ export default function SeasonalPicks() {
     </section>
   );
 }
+
