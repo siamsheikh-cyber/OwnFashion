@@ -62,6 +62,9 @@ export interface CarouselProduct {
   quote: string;
   details: string[];
   link?: string;
+  badge?: 'Best Seller' | 'Top Rated' | string;
+  reviews?: string;
+  rating?: number;
 }
 
 export interface TrendItem {

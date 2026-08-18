@@ -16,7 +16,7 @@ export default function TrendingSection() {
   };
 
   return (
-    <section className="bg-surface-container-low border border-primary/5 px-[20px] md:px-[80px] py-[80px]">
+    <section className="bg-surface-container-low border border-primary/5 px-[20px] md:px-[80px] py-[120px]">
       <div className="text-center mb-[64px] max-w-2xl mx-auto">
         <h2
           className="text-primary italic mb-4"
