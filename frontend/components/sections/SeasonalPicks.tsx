@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react";
 import Link from "next/link";
-import { picks } from "@/lib/data";
+import { useBlogPosts, getPostsByCategory, sortPostsByDateDesc } from "@/lib/adminStore";
 
 export default function SeasonalPicks() {
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -13,13 +13,24 @@ export default function SeasonalPicks() {
   const hasMoved = useRef(false);
   const [isDragging, setIsDragging] = useState(false);
 
-  // Duplicate picks to ensure seamless continuous looping
-  const pickList = [...picks, ...picks, ...picks, ...picks, ...picks, ...picks];
+  const { posts } = useBlogPosts();
+
+  // Filter posts for "SEASONAL COMFORT" (case-insensitive), sorted by date descending, max 6
+  let seasonalPosts = getPostsByCategory(posts, "SEASONAL COMFORT", 6);
+
+  // Graceful fallback: If no seasonal comfort posts found, use top 6 newest posts
+  if (seasonalPosts.length === 0) {
+    seasonalPosts = sortPostsByDateDesc(posts).slice(0, 6);
+  }
+
+  // Duplicate items sufficiently to ensure seamless continuous looping across all screen widths
+  const repeatCount = seasonalPosts.length > 0 ? Math.max(2, Math.ceil(12 / seasonalPosts.length)) : 0;
+  const pickList = Array(repeatCount).fill(seasonalPosts).flat();
 
   // Auto-scroll loop
   useEffect(() => {
     const slider = sliderRef.current;
-    if (!slider) return;
+    if (!slider || pickList.length === 0) return;
 
     let animationFrameId: number;
     let lastTime: number | null = null;
@@ -47,7 +58,7 @@ export default function SeasonalPicks() {
     return () => {
       cancelAnimationFrame(animationFrameId);
     };
-  }, []);
+  }, [pickList.length]);
 
   // Mouse Drag Handlers
   const handleMouseDown = (e: React.MouseEvent) => {
@@ -116,6 +127,10 @@ export default function SeasonalPicks() {
     }
   };
 
+  if (pickList.length === 0) {
+    return null;
+  }
+
   return (
     <section className="overflow-hidden w-full">
       {/* Section Header */}
@@ -131,7 +146,7 @@ export default function SeasonalPicks() {
             className="text-primary italic text-[26px] sm:text-[30px] md:text-[34px] leading-tight"
             style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}
           >
-            Seasonal Essentials & Comfort Fits
+            Seasonal Essentials &amp; Comfort Fits
           </h2>
         </div>
 
@@ -167,15 +182,16 @@ export default function SeasonalPicks() {
         <div className="picks-track gap-[24px] select-none">
           {pickList.map((item, idx) => (
             <article
-              key={`${item.title}-${idx}`}
+              key={`${item.id || item.slug}-${idx}`}
               className={`group flex-shrink-0 w-[280px] sm:w-[320px] md:w-[340px] select-none ${isDragging ? "cursor-grabbing" : "cursor-grab"
                 }`}
             >
+
               {/* Product Image Frame */}
               <div className="relative h-[380px] md:h-[400px] overflow-hidden bg-surface-container mb-4 border border-primary/10 select-none">
                 <div
                   className="absolute inset-0 bg-cover bg-center transition-transform duration-700 ease-out group-hover:scale-105 will-change-transform pointer-events-none select-none"
-                  style={{ backgroundImage: `url('${item.image}')` }}
+                  style={{ backgroundImage: `url('${item.mainImage}')` }}
                 />
               </div>
 
@@ -187,22 +203,23 @@ export default function SeasonalPicks() {
                 {item.title}
               </h3>
 
-              {/* Caption */}
+              {/* Caption / Excerpt */}
               <p
-                className="text-on-surface-variant italic mb-4 text-sm leading-relaxed"
+                className="text-on-surface-variant italic mb-4 text-sm leading-relaxed line-clamp-2"
                 style={{ fontFamily: "Literata, serif" }}
               >
-                {item.caption}
+                {item.excerpt}
               </p>
 
               {/* Read More Button */}
-              <button
-                type="button"
-                className="w-full py-3 border border-primary text-primary uppercase tracking-widest text-xs font-semibold hover:bg-secondary-container hover:border-secondary hover:text-on-secondary-container transition-colors duration-200"
-                style={{ fontFamily: "Hanken Grotesk, sans-serif", letterSpacing: "0.1em" }}
-              >
-                Read More
-              </button>
+              <Link href={`/posts/${item.slug}`} className="block select-none hover:bg-secondary-container hover:border-secondary hover:text-on-secondary-container">
+                <div
+                  className="w-full py-3 border border-primary text-primary uppercase tracking-widest text-xs font-semibold transition-colors duration-200 text-center"
+                  style={{ fontFamily: "Hanken Grotesk, sans-serif", letterSpacing: "0.1em" }}
+                >
+                  Read More
+                </div>
+              </Link>
             </article>
           ))}
         </div>
@@ -210,4 +227,3 @@ export default function SeasonalPicks() {
     </section>
   );
 }
-

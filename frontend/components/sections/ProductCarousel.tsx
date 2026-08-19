@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import type { EmblaCarouselType } from 'embla-carousel';
-import { carouselProducts } from '@/lib/data';
+import { useProducts } from '@/lib/productStore';
 
 type FilterTab = 'All' | 'Best Sellers' | 'Top Rated';
 
@@ -47,18 +47,19 @@ function FractionalStar({
 }
 
 export default function ProductCarousel() {
+  const { products } = useProducts();
   const [activeTab, setActiveTab] = useState<FilterTab>('All');
   const tabs: FilterTab[] = ['All', 'Best Sellers', 'Top Rated'];
 
   const filteredProducts = useMemo(() => {
     if (activeTab === 'Best Sellers') {
-      return carouselProducts.filter((p) => p.badge === 'Best Seller');
+      return products.filter((p) => p.badgeType === 'BEST SELLER');
     }
     if (activeTab === 'Top Rated') {
-      return carouselProducts.filter((p) => p.badge === 'Top Rated');
+      return products.filter((p) => p.badgeType === 'TOP RATED');
     }
-    return carouselProducts;
-  }, [activeTab]);
+    return products;
+  }, [products, activeTab]);
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
@@ -112,6 +113,10 @@ export default function ProductCarousel() {
     emblaApi.scrollTo(0);
   }, [emblaApi, filteredProducts]);
 
+  if (products.length === 0) {
+    return null;
+  }
+
   return (
     <section className="px-[20px] md:px-[80px] pb-[90px] border-primary/5 relative">
       {/* Section Header with Right-Side Filter Tabs */}
@@ -138,7 +143,7 @@ export default function ProductCarousel() {
                 type="button"
                 onClick={() => setActiveTab(tab)}
                 className={`px-4 py-2 text-xs uppercase tracking-wider font-semibold transition-all duration-200 border ${isActive
-                  ? "bg-primary text-white border-primary shadow-sm"
+                  ? "bg-[#FFA41C] text-white shadow-sm"
                   : "bg-surface text-on-surface-variant border-primary/15 hover:border-secondary hover:text-secondary hover:bg-surface-container"
                   }`}
                 style={{ fontFamily: "Hanken Grotesk, sans-serif" }}
@@ -172,124 +177,132 @@ export default function ProductCarousel() {
         {/* Carousel viewport */}
         <div className="overflow-hidden py-2" ref={emblaRef}>
           <div className="flex -ml-4 md:-ml-6 select-none touch-pan-y">
-            {filteredProducts.map((product, index) => (
-              <div
-                key={`${product.name}-${index}`}
-                className="min-w-0 flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] xl:flex-[0_0_25%] pl-4 md:pl-6"
-              >
-                <article className="h-full bg-surface border border-primary/10 p-6 flex flex-col hover:-translate-y-1 transition-all duration-200 shadow-sm hover:shadow-md">
-                  <div className="relative h-[300px] bg-surface-container mb-6 overflow-hidden">
-                    <img
-                      alt={product.name}
-                      className="w-full h-full object-cover image-zoom transition-transform duration-500 hover:scale-105"
-                      src={product.image}
-                      loading="lazy"
-                    />
+            {filteredProducts.map((product, index) => {
+              const isBestSeller = product.badgeType === 'BEST SELLER';
+              const badgeLabel = isBestSeller ? 'Best Seller' : 'Top Rated';
 
-                    {/* Overlay Badge */}
-                    {product.badge && (
+              return (
+                <div
+                  key={`${product.id || product.title}-${index}`}
+                  className="min-w-0 flex-[0_0_100%] sm:flex-[0_0_50%] lg:flex-[0_0_33.333%] xl:flex-[0_0_25%] pl-4 md:pl-6"
+                >
+                  <article className="h-full bg-surface border border-primary/10 p-6 flex flex-col hover:-translate-y-1 transition-all duration-200 shadow-sm hover:shadow-md">
+                    <div className="relative h-[300px] bg-surface-container mb-6 overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        alt={product.title}
+                        className="w-full h-full object-cover image-zoom transition-transform duration-500 hover:scale-105"
+                        src={product.image}
+                        loading="lazy"
+                      />
+
+                      {/* Overlay Badge */}
                       <div className="absolute top-3 left-3 bg-surface/95 backdrop-blur-sm px-3 py-1 border border-primary/10 shadow-sm flex items-center gap-1.5 z-10 pointer-events-none select-none">
                         <span className="text-[12px] leading-none">
-                          {product.badge === 'Best Seller' ? '🔥' : '⭐'}
+                          {isBestSeller ? '🔥' : '⭐'}
                         </span>
                         <span
                           className="text-primary font-semibold text-[11px] tracking-wider uppercase leading-none"
                           style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
                         >
-                          {product.badge}
+                          {badgeLabel}
                         </span>
                       </div>
-                    )}
-                  </div>
+                    </div>
 
-                  <div className="flex justify-between items-start mb-2">
-                    <h3
-                      className="text-primary"
-                      style={{ fontFamily: 'Georgia, serif', fontSize: '20px', lineHeight: '1.6', fontWeight: 400 }}
+                    <div className="flex justify-between items-start mb-2">
+                      <h3
+                        className="text-primary"
+                        style={{ fontFamily: 'Georgia, serif', fontSize: '20px', lineHeight: '1.6', fontWeight: 400 }}
+                      >
+                        {product.title}
+                      </h3>
+                      <span
+                        className="text-secondary uppercase tracking-widest shrink-0 ml-2"
+                        style={{ fontFamily: 'Hanken Grotesk, sans-serif', fontSize: '12px', letterSpacing: '0.1em', fontWeight: 600 }}
+                      >
+                        {product.priceText}
+                      </span>
+                    </div>
+
+                    {/* Star Rating with Fractional Coloring & Review Count */}
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex items-center">
+                        {[1, 2, 3, 4, 5].map((starIndex) => {
+                          const ratingVal = product.rating || 4.5;
+                          const fillPercentage = Math.max(0, Math.min(100, (ratingVal - (starIndex - 1)) * 100));
+                          const gradId = `star-grad-${product.title.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${index}-${starIndex}`;
+                          return (
+                            <FractionalStar
+                              key={starIndex}
+                              fillPercentage={fillPercentage}
+                              gradId={gradId}
+                            />
+                          );
+                        })}
+                      </div>
+                      <span
+                        className="text-on-surface-variant/70 text-xs font-normal"
+                        style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+                      >
+                        {product.reviewCount || '(2.5k reviews)'}
+                      </span>
+                    </div>
+
+                    <p
+                      className="text-on-surface-variant italic mb-4"
+                      style={{ fontFamily: 'Literata, serif', fontSize: '14px', lineHeight: '1.4' }}
                     >
-                      {product.name}
-                    </h3>
-                    <span
-                      className="text-secondary uppercase tracking-widest shrink-0 ml-2"
+                      &ldquo;{product.reviewQuote}&rdquo;
+                    </p>
+
+                    <ul
+                      className="text-on-surface-variant space-y-1 mb-6 flex-grow"
+                      style={{ fontFamily: 'Literata, serif', fontSize: '14px', lineHeight: '1.4' }}
+                    >
+                      {(product.features || []).map((detail, idx) => (
+                        <li key={idx}>• {detail}</li>
+                      ))}
+                    </ul>
+
+                    <a
+                      className="w-full py-3 bg-[#FFA41C] text-on-primary text-center uppercase tracking-widest hover:bg-[#FF6200] hover:text-on-secondary transition-colors inline-flex items-center justify-center gap-1.5"
+                      href={product.amazonUrl || "#"}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       style={{ fontFamily: 'Hanken Grotesk, sans-serif', fontSize: '12px', letterSpacing: '0.1em', fontWeight: 600 }}
                     >
-                      {product.price}
-                    </span>
-                  </div>
-
-                  {/* Star Rating with Fractional Coloring & Review Count */}
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="flex items-center">
-                      {[1, 2, 3, 4, 5].map((starIndex) => {
-                        const ratingVal = product.rating || 4.5;
-                        const fillPercentage = Math.max(0, Math.min(100, (ratingVal - (starIndex - 1)) * 100));
-                        const gradId = `star-grad-${product.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase()}-${index}-${starIndex}`;
-                        return (
-                          <FractionalStar
-                            key={starIndex}
-                            fillPercentage={fillPercentage}
-                            gradId={gradId}
-                          />
-                        );
-                      })}
-                    </div>
-                    <span
-                      className="text-on-surface-variant/70 text-xs font-normal"
-                      style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
-                    >
-                      {product.reviews || '(2.5k reviews)'}
-                    </span>
-                  </div>
-
-                  <p
-                    className="text-on-surface-variant italic mb-4"
-                    style={{ fontFamily: 'Literata, serif', fontSize: '14px', lineHeight: '1.4' }}
-                  >
-                    &ldquo;{product.quote}&rdquo;
-                  </p>
-
-                  <ul
-                    className="text-on-surface-variant space-y-1 mb-6 flex-grow"
-                    style={{ fontFamily: 'Literata, serif', fontSize: '14px', lineHeight: '1.4' }}
-                  >
-                    {product.details.map((detail, idx) => (
-                      <li key={idx}>• {detail}</li>
-                    ))}
-                  </ul>
-
-                  <a
-                    className="w-full py-3 bg-primary-container text-on-primary text-center uppercase tracking-widest hover:bg-secondary hover:text-on-secondary transition-colors inline-flex items-center justify-center gap-1.5"
-                    href={product.link || "#"}
-                    style={{ fontFamily: 'Hanken Grotesk, sans-serif', fontSize: '12px', letterSpacing: '0.1em', fontWeight: 600 }}
-                  >
-                    <span>View on Amazon</span>
-                    <span className="text-[13px] leading-none">↗</span>
-                  </a>
-                </article>
-              </div>
-            ))}
+                      <span>View on Amazon</span>
+                      <span className="text-[13px] leading-none">↗</span>
+                    </a>
+                  </article>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
 
       {/* Pagination Dots */}
-      <div className="flex justify-center items-center gap-2 mt-8">
-        {(scrollSnaps.length > 0 ? scrollSnaps : filteredProducts).map((_, index) => {
-          const isActive = selectedIndex === index;
-          return (
-            <button
-              key={index}
-              onClick={() => scrollTo(index)}
-              className={`h-2 rounded-full transition-all duration-300 ${isActive
-                ? 'w-6 bg-primary opacity-100'
-                : 'w-2 bg-primary/25 hover:bg-primary/50 opacity-60'
-                }`}
-              aria-label={`Go to slide ${index + 1}`}
-              aria-current={isActive ? 'true' : 'false'}
-            />
-          );
-        })}
-      </div>
+      {filteredProducts.length > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-8">
+          {(scrollSnaps.length > 0 ? scrollSnaps : filteredProducts).map((_, index) => {
+            const isActive = selectedIndex === index;
+            return (
+              <button
+                key={index}
+                onClick={() => scrollTo(index)}
+                className={`h-2 rounded-full transition-all duration-300 ${isActive
+                  ? 'w-6 bg-[#FFA41C] opacity-100'
+                  : 'w-2 bg-primary/25 hover:bg-primary/50 opacity-60'
+                  }`}
+                aria-label={`Go to slide ${index + 1}`}
+                aria-current={isActive ? 'true' : 'false'}
+              />
+            );
+          })}
+        </div>
+      )}
 
       {/* Bottom Disclaimer */}
       <div className="mt-8 text-center space-y-1.5 max-w-5xl mx-auto">
@@ -303,7 +316,3 @@ export default function ProductCarousel() {
     </section>
   );
 }
-
-
-
-

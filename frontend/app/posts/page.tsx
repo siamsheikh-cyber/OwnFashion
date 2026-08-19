@@ -1,19 +1,27 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import { getAllPosts } from "@/lib/postData";
+import { useBlogPosts } from "@/lib/adminStore";
 
 export default function PostsArchivePage() {
-  const allPosts = getAllPosts();
+  const { posts: allPosts } = useBlogPosts();
   const [selectedCategory, setSelectedCategory] = useState("ALL");
-  const [selectedSeason, setSelectedSeason] = useState("All Seasons");
+  const [selectedSeason, setSelectedSeason] = useState("ALL SEASONS");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const categories = ["ALL", "SEASONAL COMFORT", "TRENDY WEAR"];
-  const seasons = ["All Seasons", "Spring", "Summer", "Fall", "Winter"];
+  // Dynamically compute unique categories from store, ensuring default presets are always present
+  const categories = useMemo(() => {
+    const base = ["ALL", "SEASONAL COMFORT", "TRENDY WEAR"];
+    const extra = allPosts
+      .map((p) => (p.category || "").trim().toUpperCase())
+      .filter((cat) => cat && !base.includes(cat));
+    return [...base, ...Array.from(new Set(extra))];
+  }, [allPosts]);
+
+  const seasons = ["ALL SEASONS", "SPRING", "SUMMER", "FALL", "WINTER"];
 
   const formatDateToMeta = (dateStr?: string) => {
     if (!dateStr) return "AUG 11, 2026";
@@ -26,19 +34,28 @@ export default function PostsArchivePage() {
   };
 
   const filteredPosts = allPosts.filter((post) => {
+    const postCategory = (post.category || "").trim().toUpperCase();
     const matchesCategory =
-      selectedCategory === "ALL" ||
-      post.category.toUpperCase() === selectedCategory.toUpperCase();
+      selectedCategory === "ALL" || postCategory === selectedCategory;
 
+    const selectedSeasonNorm = selectedSeason.trim().toUpperCase();
+    const postSeasonNorm = (post.season || "").trim().toUpperCase();
     const matchesSeason =
-      selectedSeason === "All Seasons" ||
-      (post.season && post.season.toLowerCase() === selectedSeason.toLowerCase());
+      selectedSeasonNorm === "ALL SEASONS" ||
+      selectedSeasonNorm === "ALL" ||
+      postSeasonNorm === selectedSeasonNorm;
+
+    const title = (post.title || "").toLowerCase();
+    const category = (post.category || "").toLowerCase();
+    const season = (post.season || "").toLowerCase();
+    const excerpt = (post.excerpt || "").toLowerCase();
+    const query = searchQuery.toLowerCase();
 
     const matchesSearch =
-      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (post.season && post.season.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (post.description && post.description.toLowerCase().includes(searchQuery.toLowerCase()));
+      title.includes(query) ||
+      category.includes(query) ||
+      season.includes(query) ||
+      excerpt.includes(query);
 
     return matchesCategory && matchesSeason && matchesSearch;
   });
@@ -108,7 +125,7 @@ export default function PostsArchivePage() {
               >
                 {seasons.map((season) => (
                   <option key={season} value={season}>
-                    {season === "All Seasons" ? "ALL SEASONS" : season.toUpperCase()}
+                    {season}
                   </option>
                 ))}
               </select>
@@ -117,7 +134,7 @@ export default function PostsArchivePage() {
               </span>
             </div>
 
-            {/* Search Box (Intact) */}
+            {/* Search Box */}
             <div className="w-full sm:w-64 relative">
               <input
                 type="text"
@@ -142,7 +159,7 @@ export default function PostsArchivePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
             {filteredPosts.map((post) => (
               <article
-                key={post.slug}
+                key={post.id || post.slug}
                 className="group flex flex-col bg-surface border border-primary/10 hover:shadow-lg transition-shadow duration-300"
               >
                 <Link href={`/posts/${post.slug}`} className="flex flex-col h-full p-5">
@@ -150,7 +167,7 @@ export default function PostsArchivePage() {
                   <div className="relative h-[260px] overflow-hidden bg-surface-container border border-primary/10 mb-4">
                     <div
                       className="absolute inset-0 bg-cover bg-center image-zoom"
-                      style={{ backgroundImage: `url('${post.image}')` }}
+                      style={{ backgroundImage: `url('${post.mainImage}')` }}
                     />
                   </div>
 
@@ -174,7 +191,7 @@ export default function PostsArchivePage() {
                       className="text-on-surface-variant uppercase tracking-widest text-xs font-semibold"
                       style={{ fontFamily: "Hanken Grotesk, sans-serif", letterSpacing: "0.08em" }}
                     >
-                      {formatDateToMeta(post.publishedAt)}
+                      {formatDateToMeta(post.date)}
                     </span>
                   </div>
 
@@ -186,12 +203,12 @@ export default function PostsArchivePage() {
                     {post.title}
                   </h2>
 
-                  {/* Description */}
+                  {/* Description / Excerpt */}
                   <p
                     className="text-on-surface-variant text-sm line-clamp-3 mb-6 font-light"
                     style={{ fontFamily: "Literata, serif" }}
                   >
-                    {post.description}
+                    {post.excerpt}
                   </p>
 
                   {/* Footer Bar */}
