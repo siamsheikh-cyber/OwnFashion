@@ -3,13 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-interface NavItem {
-  label: string;
-  href: string;
-  icon: string;
-  section?: string;
-}
-
 const NAV_SECTIONS = [
   {
     title: 'Editorial Blog',
@@ -26,8 +19,9 @@ const NAV_SECTIONS = [
     ],
   },
   {
-    title: 'System',
+    title: 'Homepage & Appearance',
     items: [
+      { label: 'Hero Spotlight', href: '/admin/hero', icon: '✦' },
       { label: 'Settings', href: '/admin/settings', icon: '⚙' },
     ],
   },
@@ -38,7 +32,7 @@ export default function AdminSidebar() {
 
   const isActive = (href: string) => {
     if (pathname === href) return true;
-    if (href !== '/admin/blogs' && href !== '/admin/products' && pathname.startsWith(href)) return true;
+    if (href !== '/admin/blogs' && href !== '/admin/products' && href !== '/admin/hero' && pathname.startsWith(href)) return true;
     return false;
   };
 

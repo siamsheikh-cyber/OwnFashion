@@ -33,7 +33,7 @@ export default function Navbar() {
   }, [pathname]);
 
   return (
-    <nav className="bg-[#ECE7DC] backdrop-blur-md w-full top-0 sticky border-b border-primary/10 z-50 transition-all ease-in-out duration-300">
+    <nav className="bg-[#F2EEE8] backdrop-blur-md w-full top-0 sticky border-b border-primary/10 z-50 transition-all ease-in-out duration-300">
       {/* Top Announcement Bar - Amazon Affiliate Disclosure */}
       <div className="bg-[#DFD8C8] text-primary/80 border-b border-primary/10 py-1.5 sm:py-2 px-4 text-center">
         <p
@@ -179,8 +179,8 @@ export default function Navbar() {
                   href={getLinkHref(link)}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`text-sm uppercase tracking-widest font-semibold py-2 px-3 transition-colors duration-200 flex items-center justify-between border-l-2 ${active
-                      ? "text-secondary border-secondary bg-black/5"
-                      : "text-primary border-transparent hover:text-secondary hover:border-secondary/40"
+                    ? "text-secondary border-secondary bg-black/5"
+                    : "text-primary border-transparent hover:text-secondary hover:border-secondary/40"
                     }`}
                   style={{ fontFamily: "Hanken Grotesk, sans-serif" }}
                 >

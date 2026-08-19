@@ -2,6 +2,11 @@ import { Author, AffiliateProduct, ContentBlock } from './index';
 
 export type BlogSeason = 'SPRING' | 'SUMMER' | 'FALL' | 'WINTER' | 'ALL' | string;
 
+export interface FeaturedProduct {
+  imageUrl: string;
+  amazonUrl: string;
+}
+
 export interface AdminBlogPost {
   id: string;
   title: string;
@@ -22,6 +27,10 @@ export interface AdminBlogPost {
   tags?: string[];
   affiliateProducts?: AffiliateProduct[];
   contentBlocks?: ContentBlock[];
+  /** Small end-of-article credit/note, e.g. "Written by Sophia Blanche" */
+  footerNote?: string;
+  /** Featured product images with Amazon affiliate links shown below article body */
+  featuredProducts?: FeaturedProduct[];
 }
 
 export type AdminBlogPostDraft = Omit<AdminBlogPost, 'id' | 'createdAt' | 'updatedAt'>;

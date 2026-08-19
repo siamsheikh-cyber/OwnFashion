@@ -11,6 +11,7 @@ const BREADCRUMBS: Record<string, { label: string; parent?: string; parentHref?:
   '/admin/products':      { label: 'Products Showcase', parent: 'Dashboard', parentHref: '/admin' },
   '/admin/products/new':  { label: 'Add Product', parent: 'Products', parentHref: '/admin/products' },
   '/admin/products/edit': { label: 'Edit Product', parent: 'Products', parentHref: '/admin/products' },
+  '/admin/hero':          { label: 'Hero Spotlight Card', parent: 'Dashboard', parentHref: '/admin' },
   '/admin/settings':      { label: 'Settings', parent: 'Dashboard', parentHref: '/admin' },
 };
 

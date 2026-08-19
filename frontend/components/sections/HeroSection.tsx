@@ -1,8 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { useHeroContent } from "@/lib/heroStore";
 
 export default function HeroSection() {
+  const { hero } = useHeroContent();
+
+  const isVisible = hero.isVisible !== false && (hero.title || hero.description || hero.buttonText);
+
   return (
     <section className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center min-h-[55vh] md:min-h-[70vh] w-full px-0">
       {/* 9-col (desktop) / 8-col (tablet) / 12-col (mobile) Hero Image Banner */}
@@ -14,39 +19,51 @@ export default function HeroSection() {
           }}
         />
 
-        {/* Editorial Spotlight Card */}
-        <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 md:bottom-10 md:left-8 lg:bottom-12 lg:left-[80px] xl:left-[152px] md:right-auto bg-secondary-container p-5 sm:p-7 md:p-8 max-w-full md:max-w-lg lg:max-w-2xl border border-primary/20 z-20 shadow-md md:shadow-none">
-          <p
-            className="text-on-secondary-container uppercase tracking-widest mb-1.5 sm:mb-2 text-[10px] sm:text-xs font-semibold"
-            style={{
-              fontFamily: "Hanken Grotesk, sans-serif",
-              letterSpacing: "0.1em",
-            }}
-          >
-            Editorial Spotlight
-          </p>
-          <h1
-            className="text-primary italic mb-3 sm:mb-4 text-[22px] sm:text-[28px] md:text-[34px] lg:text-[40px] leading-[1.2] font-normal"
-            style={{
-              fontFamily: "Georgia, serif",
-            }}
-          >
-            The Art of Subtlety: Spring Collection
-          </h1>
-          <Link
-            href="/posts"
-            className="inline-flex items-center gap-2 text-primary border-b border-primary pb-1 hover:text-secondary hover:border-secondary transition-colors uppercase tracking-widest text-[11px] sm:text-xs font-semibold"
-            style={{
-              fontFamily: "Hanken Grotesk, sans-serif",
-              letterSpacing: "0.1em",
-            }}
-          >
-            Explore Collection{" "}
-            <span className="material-symbols-outlined text-[14px] sm:text-[16px]">
-              arrow_forward
-            </span>
-          </Link>
-        </div>
+        {/* Hero Overlay Card */}
+        {isVisible && (
+          <div className="absolute bottom-4 left-4 right-4 sm:bottom-6 sm:left-6 sm:right-6 md:bottom-10 md:left-8 lg:bottom-12 lg:left-[80px] xl:left-[152px] md:right-auto bg-secondary-container p-5 sm:p-7 md:p-8 max-w-full md:max-w-lg lg:max-w-2xl border border-primary/20 z-20 shadow-md md:shadow-none">
+            {/* Title / Heading */}
+            {hero.title && (
+              <h1
+                className="text-primary italic mb-2.5 sm:mb-3 text-[22px] sm:text-[28px] md:text-[34px] lg:text-[40px] leading-[1.2] font-normal"
+                style={{
+                  fontFamily: "Georgia, serif",
+                }}
+              >
+                {hero.title}
+              </h1>
+            )}
+
+            {/* Paragraph / Short Description */}
+            {hero.description && (
+              <p
+                className="text-on-secondary-container text-xs sm:text-sm md:text-base leading-relaxed mb-4 font-normal"
+                style={{
+                  fontFamily: "Literata, serif",
+                }}
+              >
+                {hero.description}
+              </p>
+            )}
+
+            {/* Action Button */}
+            {hero.buttonText && (
+              <Link
+                href={hero.buttonLink || "/posts"}
+                className="inline-flex items-center gap-2 text-primary border-b border-primary pb-1 hover:text-secondary hover:border-secondary transition-colors uppercase tracking-widest text-[11px] sm:text-xs font-semibold"
+                style={{
+                  fontFamily: "Hanken Grotesk, sans-serif",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                {hero.buttonText}{" "}
+                <span className="material-symbols-outlined text-[14px] sm:text-[16px]">
+                  arrow_forward
+                </span>
+              </Link>
+            )}
+          </div>
+        )}
       </div>
 
       {/* 3-col (desktop) / 4-col (tablet) Promo Video/Inset */}

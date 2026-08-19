@@ -205,3 +205,15 @@ export function usePostBySlug(slug: string) {
     notFound: isLoaded && !post,
   };
 }
+
+// Re-export hero store functionality
+export {
+  useHeroContent,
+  loadHeroContent,
+  saveHeroContent,
+  resetHeroContent,
+  clearHeroContent,
+  DEFAULT_HERO_CONTENT,
+  HERO_STORAGE_KEY,
+  HERO_UPDATED_EVENT,
+} from './heroStore';

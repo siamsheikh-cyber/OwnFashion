@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { AdminBlogPost } from '@/types/admin';
+import { AdminBlogPost, FeaturedProduct } from '@/types/admin';
 import { slugify } from '@/lib/adminStore';
 
 interface BlogFormProps {
@@ -26,6 +26,7 @@ interface FormData {
   mainImage: string;
   amazonAffiliateUrl: string;
   featured: boolean;
+  footerNote: string;
 }
 
 interface FormErrors {
@@ -85,7 +86,12 @@ export default function BlogForm({ mode, initialData, onSubmit, isSubmitting }: 
     mainImage: initialData?.mainImage || '',
     amazonAffiliateUrl: initialData?.amazonAffiliateUrl || '',
     featured: initialData?.featured ?? false,
+    footerNote: initialData?.footerNote || '',
   });
+
+  const [featuredProducts, setFeaturedProducts] = useState<FeaturedProduct[]>(
+    initialData?.featuredProducts ?? []
+  );
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(mode === 'edit');
@@ -119,8 +125,20 @@ export default function BlogForm({ mode, initialData, onSubmit, isSubmitting }: 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
-    onSubmit({ ...form });
+    onSubmit({ ...form, featuredProducts });
   };
+
+  /* ── Featured Products helpers ──────────────────────────────── */
+  const addFeaturedProduct = () =>
+    setFeaturedProducts((prev) => [...prev, { imageUrl: '', amazonUrl: '' }]);
+
+  const removeFeaturedProduct = (idx: number) =>
+    setFeaturedProducts((prev) => prev.filter((_, i) => i !== idx));
+
+  const updateFeaturedProduct = (idx: number, field: keyof FeaturedProduct, value: string) =>
+    setFeaturedProducts((prev) =>
+      prev.map((p, i) => (i === idx ? { ...p, [field]: value } : p))
+    );
 
   const fieldFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     (e.target as HTMLElement).style.borderColor = '#3b82f6';
@@ -218,6 +236,163 @@ export default function BlogForm({ mode, initialData, onSubmit, isSubmitting }: 
               }}
             />
             {errors.content && <p style={errorStyle}>{errors.content}</p>}
+          </div>
+
+          {/* Blog End Note / Credit Note */}
+          <div>
+            <label style={labelStyle} htmlFor="bf-footer-note">
+              Blog End Note / Credit Note
+              &nbsp;<span style={{ textTransform: 'none', fontWeight: 400, color: '#484f58' }}>— optional, shown subtly at end of article</span>
+            </label>
+            <input
+              id="bf-footer-note"
+              type="text"
+              value={form.footerNote}
+              onChange={(e) => set('footerNote', e.target.value)}
+              onFocus={fieldFocus}
+              onBlur={fieldBlur}
+              placeholder="e.g. Written by Sophia Blanche · Curated from Fashion Weekly"
+              style={{ ...inputStyle }}
+            />
+          </div>
+
+          {/* Featured Products Gallery */}
+          <div
+            style={{
+              background: '#161b22',
+              border: '1px solid #30363d',
+              borderRadius: '8px',
+              padding: '20px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '16px',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div>
+                <h3 style={{ margin: '0 0 2px', color: '#e6edf3', fontFamily: 'Inter, sans-serif', fontSize: '14px', fontWeight: 600 }}>
+                  Featured Products Gallery
+                </h3>
+                <p style={{ margin: 0, color: '#8b949e', fontFamily: 'Inter, sans-serif', fontSize: '12px' }}>
+                  Images shown with Amazon affiliate links below the article
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={addFeaturedProduct}
+                style={{
+                  padding: '6px 12px',
+                  background: 'linear-gradient(135deg,#3b82f6,#2563eb)',
+                  border: '1px solid #2563eb',
+                  borderRadius: '6px',
+                  color: '#fff',
+                  fontFamily: 'Inter, sans-serif',
+                  fontSize: '12px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  whiteSpace: 'nowrap',
+                  flexShrink: 0,
+                }}
+              >
+                + Add Product
+              </button>
+            </div>
+
+            {featuredProducts.length === 0 && (
+              <p style={{ margin: 0, color: '#484f58', fontFamily: 'Inter, sans-serif', fontSize: '12px', fontStyle: 'italic' }}>
+                No featured products yet. Click "+ Add Product" to add image + affiliate link pairs.
+              </p>
+            )}
+
+            {featuredProducts.map((prod, idx) => (
+              <div
+                key={idx}
+                style={{
+                  background: '#0d1117',
+                  border: '1px solid #21262d',
+                  borderRadius: '6px',
+                  padding: '14px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '10px',
+                  position: 'relative',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span style={{ color: '#8b949e', fontFamily: 'Inter, sans-serif', fontSize: '12px', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                    Product #{idx + 1}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeFeaturedProduct(idx)}
+                    style={{
+                      background: 'transparent',
+                      border: '1px solid #30363d',
+                      borderRadius: '4px',
+                      color: '#ef4444',
+                      fontFamily: 'Inter, sans-serif',
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      padding: '3px 8px',
+                      letterSpacing: '0.03em',
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+
+                {/* Image URL */}
+                <div>
+                  <label style={labelStyle} htmlFor={`bf-fp-img-${idx}`}>Product Image URL</label>
+                  <input
+                    id={`bf-fp-img-${idx}`}
+                    type="url"
+                    value={prod.imageUrl}
+                    onChange={(e) => updateFeaturedProduct(idx, 'imageUrl', e.target.value)}
+                    onFocus={fieldFocus}
+                    onBlur={fieldBlur}
+                    placeholder="https://images.amazon.com/…"
+                    style={{ ...inputStyle }}
+                  />
+                  {prod.imageUrl && (
+                    <div
+                      style={{
+                        marginTop: '8px',
+                        height: '100px',
+                        borderRadius: '4px',
+                        overflow: 'hidden',
+                        border: '1px solid #30363d',
+                        background: '#1c2128',
+                      }}
+                    >
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={prod.imageUrl}
+                        alt={`Product ${idx + 1} preview`}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = 'none'; }}
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* Amazon Affiliate Link */}
+                <div>
+                  <label style={labelStyle} htmlFor={`bf-fp-url-${idx}`}>Amazon Affiliate Link</label>
+                  <input
+                    id={`bf-fp-url-${idx}`}
+                    type="url"
+                    value={prod.amazonUrl}
+                    onChange={(e) => updateFeaturedProduct(idx, 'amazonUrl', e.target.value)}
+                    onFocus={fieldFocus}
+                    onBlur={fieldBlur}
+                    placeholder="https://www.amazon.com/dp/…?tag=…"
+                    style={{ ...inputStyle }}
+                  />
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

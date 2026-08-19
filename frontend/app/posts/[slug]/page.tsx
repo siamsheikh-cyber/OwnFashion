@@ -116,12 +116,12 @@ export default function PostDetailPage({ params }: PageProps) {
 
         {/* ── Affiliate Disclosure ─────────────────────────────────── */}
         <div
-          className="mb-8 px-4 py-3 bg-surface-container/60 text-xs text-on-surface-variant italic flex items-center gap-2"
+          className="mb-8 py-3 text-xs text-on-surface-variant italic flex items-center gap-2"
           style={{ fontFamily: "Literata, serif" }}
         >
-          <span className="material-symbols-outlined text-sm text-secondary not-italic">info</span>
+
           <span>
-            <strong className="not-italic font-semibold text-primary">Affiliate Disclosure:</strong>{" "}
+            <strong className="not-italic font-semibold text-primary"></strong>{" "}
             This post contains affiliate links. We may earn a small commission at no extra cost to you.
           </span>
         </div>
@@ -229,6 +229,80 @@ export default function PostDetailPage({ params }: PageProps) {
           )}
         </article>
 
+        {/* ── Footer Note (footerNote) ──────────────────────────────── */}
+        {post.footerNote && (
+          <p
+            className="text-on-surface-variant/70 text-sm leading-relaxed mb-10 -mt-4"
+            style={{ fontFamily: 'Literata, serif', fontStyle: 'italic' }}
+          >
+            {post.footerNote}
+          </p>
+        )}
+
+        {(post.featuredProducts ?? []).length > 0 && (
+          <section className="mb-14">
+            <div className="mb-1" style={{ borderTop: '1px solid', borderColor: 'var(--color-primary, #5a3e2b)', opacity: 0.12, marginBottom: '0' }} />
+            <h2
+              className="text-primary italic mb-6 mt-8"
+              style={{
+                fontFamily: 'Georgia, serif',
+                fontSize: 'clamp(20px, 2.8vw, 28px)',
+                fontWeight: 400,
+              }}
+            >
+              Featured Products
+            </h2>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+              {(post.featuredProducts ?? []).map((fp, idx) => (
+                <a
+                  key={idx}
+                  href={fp.amazonUrl || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative block overflow-hidden bg-surface-container"
+                  style={{ aspectRatio: '3/4' }}
+                  aria-label={`See product ${idx + 1} on Amazon`}
+                >
+                  {/* Product image */}
+                  <img
+                    src={fp.imageUrl}
+                    alt={`Featured product ${idx + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+
+                  {/* Hover overlay with eye icon */}
+                  <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300" style={{ background: 'rgba(0,0,0,0.52)' }}>
+                    {/* Eye icon (SVG) */}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="28"
+                      height="28"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="text-white mb-1.5"
+                      aria-hidden="true"
+                    >
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    <span
+                      className="text-white text-[10px] uppercase tracking-widest font-semibold"
+                      style={{ fontFamily: 'Hanken Grotesk, sans-serif' }}
+                    >
+                      See
+                    </span>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
         {/* ── Shop the Look / Affiliate Products ────────────────────── */}
         {affiliateProducts.length > 0 ? (
           <section className="mb-14">
@@ -293,55 +367,26 @@ export default function PostDetailPage({ params }: PageProps) {
         ) : post.amazonAffiliateUrl ? (
           <section className="mb-14 p-6 bg-surface border border-primary/10 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div>
-              <span
-                className="text-secondary text-xs uppercase tracking-widest font-semibold block mb-1"
-                style={{ fontFamily: "Hanken Grotesk, sans-serif" }}
-              >
-                Featured Affiliate Pick
-              </span>
+
               <h3
                 className="text-primary italic text-xl mb-1"
                 style={{ fontFamily: "Georgia, serif" }}
               >
                 Shop Featured Products from This Edit
               </h3>
-              <p className="text-on-surface-variant text-sm" style={{ fontFamily: "Literata, serif" }}>
-                Explore the curated collection on Amazon with verified merchant pricing and delivery.
-              </p>
+
             </div>
             <a
               href={post.amazonAffiliateUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="px-6 py-3 bg-primary text-white hover:bg-secondary transition-colors text-xs uppercase tracking-widest font-semibold whitespace-nowrap inline-flex items-center gap-2"
+              className="px-6 py-3 bg-[#FFA41C] hover:bg-[#FF6200] transition-colors text-white text-xs uppercase tracking-widest font-semibold whitespace-nowrap inline-flex items-center gap-2"
               style={{ fontFamily: "Hanken Grotesk, sans-serif" }}
             >
               See on Amazon <span className="text-sm">↗</span>
             </a>
           </section>
         ) : null}
-
-        {/* ── Author Info ───────────────────────────────────────────── */}
-        <div className="mb-14 pt-8 border-t border-primary/10">
-          <span
-            className="text-secondary text-xs uppercase tracking-widest font-semibold block mb-1"
-            style={{ fontFamily: "Hanken Grotesk, sans-serif" }}
-          >
-            Written By
-          </span>
-          <h3
-            className="text-primary italic text-xl"
-            style={{ fontFamily: "Georgia, serif", fontWeight: 400 }}
-          >
-            {post.author?.name || "OwnFashion Editorial"}
-          </h3>
-          <p
-            className="text-on-surface-variant text-sm mt-0.5"
-            style={{ fontFamily: "Hanken Grotesk, sans-serif" }}
-          >
-            {post.author?.role || "Curated Fashion & Lifestyle Editorial"}
-          </p>
-        </div>
 
         {/* ── Related Posts ─────────────────────────────────────────── */}
         {relatedPosts.length > 0 && (
